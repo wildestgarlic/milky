@@ -3,10 +3,8 @@ package db
 import "gorm.io/gorm"
 
 type Gormer interface {
-	Acquire() *gorm.DB
-	Release()
+	GetConnection() *gorm.DB
 	Migrate(models ...interface{})
 
 	Shutdown()
 }
-

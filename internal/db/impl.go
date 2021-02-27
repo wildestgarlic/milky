@@ -9,68 +9,58 @@ import (
 	"log"
 	"net/url"
 	"sync"
-	"time"
 )
 
-var once sync.Once
-var cfg = config.Config
+var (
+	cfg  = config.Config
+	once sync.Once
+	db   *gorm.DB
+
+	dsn = url.URL{
+		Scheme:   cfg.DB.Scheme,
+		User:     url.UserPassword(cfg.DB.Username, cfg.DB.Password),
+		Host:     fmt.Sprintf("%s:%d", cfg.DB.Host, cfg.DB.Port),
+		Path:     cfg.DB.Name,
+		RawQuery: (&url.Values{"sslmode": []string{cfg.DB.SSLMode}}).Encode(),
+	}
+)
 
 func gormInit() *gorm.DB {
-	var db *gorm.DB
 	var err error
 
 	once.Do(
-		func(){
+		func() {
 			db, err = gorm.Open(postgres.Open(dsn.String()), &gorm.Config{})
 			if err != nil {
 				log.Fatalf("Gorm connect error: %v", err)
 			}
 
 			// Connection pool settings
-			sqlDB, err := db.DB()
-			if err != nil {
-				log.Fatalf("Connection for pool settings error: %v", err)
-			}
-			sqlDB.SetMaxIdleConns(10) // must be < than max open
-			sqlDB.SetMaxOpenConns(10) // in-use + idle fixme: set much more, paste values in cfg
-			sqlDB.SetConnMaxLifetime(10 * time.Minute)
+			//sqlDB, err := db.DB()
+			//if err != nil {
+			//	log.Fatalf("Connection for pool settings error: %v", err)
+			//}
+			//sqlDB.SetMaxIdleConns(int(cfg.DB.MaxIdleConns)) // must be <= than max open
+			//sqlDB.SetMaxOpenConns(int(cfg.DB.MaxOpenConns) ) // in-use + idle life in seconds
+			//sqlDB.SetConnMaxLifetime(time.Duration(cfg.DB.MaxConnsLifeTime) * time.Second)
 		})
 
 	return db
 }
 
-type impl struct{
+type impl struct {
 	db *gorm.DB
-	mx  *sync.RWMutex
-}
-
-var dsn = url.URL{
-	Scheme:   cfg.DB.Scheme,
-	User:     url.UserPassword(cfg.DB.Username, cfg.DB.Password),
-	Host:     fmt.Sprintf("%s:%d", cfg.DB.Host, cfg.DB.Port),
-	Path:     cfg.DB.Name,
-	RawQuery: (&url.Values{"sslmode": []string{cfg.DB.SSLMode}}).Encode(),
 }
 
 func New() Gormer {
-	var db *gorm.DB
-
-	db = gormInit()
 	c := &impl{
-		db: db,
-		mx: new(sync.RWMutex),
+		db: gormInit(),
 	}
-
 	return c
 }
 
-func (c *impl) Acquire() *gorm.DB {
-	c.mx.Lock()
+func (c *impl) GetConnection() *gorm.DB {
 	return c.db
-}
-
-func (c *impl) Release() {
-	c.mx.Unlock()
 }
 
 func (c *impl) Shutdown() {
@@ -89,8 +79,6 @@ func (c *impl) Shutdown() {
 }
 
 func (c *impl) Migrate(models ...interface{}) {
-	c.mx.Lock()
-	defer c.mx.Unlock()
 	c.migration(models)
 }
 

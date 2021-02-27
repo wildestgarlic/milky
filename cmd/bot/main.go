@@ -2,29 +2,33 @@ package main
 
 import (
 	"TelebotOne/internal/telegram"
-	"fmt"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"os"
 )
 
 func main() {
-	var err error
-
-	token := os.Getenv("TOKEN")
-	fmt.Println(token)
-	bot, err := tgbotapi.NewBotAPI(token)
-	if err != nil {
-		log.Panic(err)
-	}
-
+	bot := getBot()
 	bot.Debug = true
 
-	telegramBot := telegram.NewBot(bot)
-	err = telegramBot.Start()
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	startBot(bot)
 }
 
+func getBot() *tgbotapi.BotAPI {
+	token := os.Getenv("BOT_TOKEN")
+
+	bot, err := tgbotapi.NewBotAPI(token)
+	if err != nil {
+		log.Fatalf("Start connection error: %s", err)
+	}
+
+	return bot
+}
+
+func startBot(bot *tgbotapi.BotAPI) {
+	telegramBot := telegram.NewBot(bot)
+	err := telegramBot.Start()
+	if err != nil {
+		log.Fatalf("Bot initializing error: %s", err)
+	}
+}

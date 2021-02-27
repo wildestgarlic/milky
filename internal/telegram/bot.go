@@ -37,7 +37,7 @@ func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 			continue
 		}
 
-		b.handleMassage(update.Message)
+		b.handleMessage(update.Message)
 	}
 }
 
