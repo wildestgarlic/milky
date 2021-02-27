@@ -45,6 +45,7 @@ func gormInit() *gorm.DB {
 			//sqlDB.SetConnMaxLifetime(time.Duration(cfg.DB.MaxConnsLifeTime) * time.Second)
 		})
 
+	fmt.Println("Success DB connection")
 	return db
 }
 

@@ -1,4 +1,4 @@
-package telegram
+package updates
 
 import (
 	"github.com/go-telegram-bot-api/telegram-bot-api"
@@ -33,11 +33,11 @@ func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 		}
 
 		if update.Message.IsCommand() {
-			b.handleCommand(update.Message)
+			b.handleCommands(update.Message)
 			continue
 		}
 
-		b.handleMessage(update.Message)
+		b.handleMessages(update.Message)
 	}
 }
 

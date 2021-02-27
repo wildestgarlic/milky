@@ -1,8 +1,8 @@
 package constant
 
 const (
-	Start            = "start"
-	CreateExercise   = "create"
-	DropExercise     = "drop"
-	ShowAllExercises = "all"
+	StartCommand   = "start"
+	CreateCommand  = "create"
+	DropCommand    = "drop"
+	ShowAllCommand = "all"
 )

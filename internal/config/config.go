@@ -5,13 +5,13 @@ import (
 	"log"
 )
 
-var Config *ConfigModel
+var Config Configuration
 
 func init() {
 	initConfig()
 }
 
-type ConfigModel struct {
+type Configuration struct {
 	DB struct {
 		Scheme           string `env:"DB_SCHEME" env-default:"postgres"`
 		Host             string `env:"DB_HOST" env-default:"127.0.0.1"`
@@ -24,6 +24,8 @@ type ConfigModel struct {
 		MaxIdleConns     uint32 `env:"DB_MAX_IDLE_CONNS" env-default:"5"`
 		MaxConnsLifeTime uint64 `env:"MAX_CONNS_LIFE_TIME" env-default:"600"` //seconds
 	}
+
+	BotDebug bool `env:"BOT_DEBUG" env-default:"true"`
 }
 
 func initConfig() {

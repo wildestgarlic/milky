@@ -19,9 +19,21 @@ func NewExercisesRepo() Exerciser {
 	return r
 }
 
-func (r *exercisesRepo) CreateExerciseTable(req *models.Exercise) error {
+func (r *exercisesRepo) CreateExerciseTable(name string) error {
 	exercise := &models.Exercise{
-		Name:          req.Name,
+		Name: name,
+	}
+
+	err := r.conn.AutoMigrate(exercise)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *exercisesRepo) FillExerciseTable(req *models.Exercise) error {
+	exercise := &models.Exercise{
 		SetsQuantity:  req.SetsQuantity,
 		RepsInEachSet: req.RepsInEachSet,
 		Description:   req.Description,
