@@ -34,6 +34,7 @@ func (r *exercisesRepo) CreateExerciseTable(name string) error {
 
 func (r *exercisesRepo) FillExerciseTable(req *models.Exercise) error {
 	exercise := &models.Exercise{
+		Name:          req.Name,
 		SetsQuantity:  req.SetsQuantity,
 		RepsInEachSet: req.RepsInEachSet,
 		Description:   req.Description,

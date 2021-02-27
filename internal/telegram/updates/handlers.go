@@ -3,7 +3,6 @@ package updates
 import (
 	"TelebotOne/internal/config"
 	"TelebotOne/internal/repo/exersises"
-	"TelebotOne/internal/repo/models"
 	"TelebotOne/internal/telegram/constant"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
@@ -56,8 +55,7 @@ func (b *Bot) handleCreate(message *tgbotapi.Message) {
 
 	text := constant.CreateSuccessMessage
 
-	exercise := &models.Exercise{}
-	err := repo.FillExerciseTable(exercise)
+	err := repo.CreateExerciseTable("name")
 	if err != nil {
 		text = constant.CreateErrorMessage
 	}
