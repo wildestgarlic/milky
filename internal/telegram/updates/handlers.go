@@ -55,9 +55,12 @@ func (b *Bot) handleCreate(message *tgbotapi.Message) {
 
 	text := constant.CreateSuccessMessage
 
-	err := repo.CreateExerciseTable("name")
+	err := repo.CreateExerciseTable("exercises") //fixme: fix name
 	if err != nil {
 		text = constant.CreateErrorMessage
+		if err.Error() == constant.TableExist {
+			text = constant.AlreadyExistErrorMessage
+		}
 	}
 
 	b.SendMessage(message, text)

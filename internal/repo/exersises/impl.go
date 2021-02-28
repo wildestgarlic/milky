@@ -3,6 +3,7 @@ package exersises
 import (
 	"TelebotOne/internal/db"
 	"TelebotOne/internal/repo/models"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
@@ -22,6 +23,11 @@ func NewExercisesRepo() Exerciser {
 func (r *exercisesRepo) CreateExerciseTable(name string) error {
 	exercise := &models.Exercise{
 		Name: name,
+	}
+
+	if r.conn.Migrator().HasTable("exercises") {
+		err := errors.New("table exist") //fixme: text to variable
+		return err
 	}
 
 	err := r.conn.AutoMigrate(exercise)

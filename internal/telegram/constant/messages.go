@@ -9,4 +9,6 @@ const (
 	CreateErrorMessage  = "Возникла ошибочка. Операция не выполнена"
 	DropErrorMessage    = "Возникла ошибочка. Операция не выполнена"
 	ShowAllErrorMessage = "Возникла ошибочка. Операция не выполнена"
+
+	AlreadyExistErrorMessage = "Уже существует"
 )

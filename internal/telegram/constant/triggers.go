@@ -1,5 +1,7 @@
 package constant
 
 const (
-	ya = "уа"
+	Ya = "уа"
+
+	TableExist = "table exist"
 )
